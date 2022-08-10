@@ -6,7 +6,7 @@ import { Routes, Route } from "react-router-dom";
 const App = () => {
   return (
     <>
-      <AnimatePresence>
+      <AnimatePresence exitBeforeEnter>
         <div className="w-screen h-auto flex flex-col bg-primary">
           <Header />
 
