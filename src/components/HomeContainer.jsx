@@ -14,20 +14,20 @@ const HomeContainer = () => {
           <p className="text-base text-orange-500 font-semibold">
             Bike Delivery
           </p>
-          <div className="w-6 h-6 rounded-full overflow-hidden">
+          <div className="w-8 h-8 bg-white rounded-full overflow-hidden drop-shadow-xl">
             <img
               src={Delivery}
-              className="w-full bg-white h-full object-contain drop-shadow-xl"
+              className="w-full h-full object-contain"
               alt="delivery"
             />
           </div>
         </div>
         <p
           className="text-[2.5rem] font-bold tracking-wide text-headingColor 
-        md:text-[4.5rem]"
+        lg:text-[4.5rem]"
         >
           The Fastest Delivery in
-          <span className="text-orange-600 text-[3rem] md:text-[5rem]">
+          <span className="text-orange-600 text-[3rem] lg:text-[5rem]">
             Your City
           </span>
         </p>
@@ -43,7 +43,7 @@ const HomeContainer = () => {
         <button
           type="button"
           className="bg-gradient-to-br from-orange-400 to-orange-500 w-full px-4
-          py-2 md:w-auto rounded-lg hover:shadow-lg transition-all ease-in-out"
+          py-2 md:w-auto rounded-lg hover:shadow-lg transition-all ease-in-out duration-100"
         >
           Order Now
         </button>
@@ -57,15 +57,15 @@ const HomeContainer = () => {
 
         <div
           className="w-full h-full absolute top-0 left-0 
-         flex items-center justify-center py-4 gap-4 lg:px-32 flex-wrap drop-shadow-lg"
+         flex items-center justify-center py-4 gap-4 lg:px-0 xl:px-32 flex-wrap "
         >
           {/* heroData dùng vòng lập lấy dữ liệu */}
           {heroData &&
             heroData.map((n) => (
               <div
                 key={n.id}
-                className="w-190 lg:w-190 p-4 bg-cardOverlay backdrop-blur-md rounded-3xl flex 
-                items-center justify-center flex-col"
+                className=" lg:w-190 p-4 bg-cardOverlay backdrop-blur-md rounded-3xl flex 
+                flex-col items-center justify-center drop-shadow-lg"
               >
                 <img
                   src={n.imageSrc}
@@ -79,7 +79,7 @@ const HomeContainer = () => {
                   {n.decp}
                 </p>
                 <p className="text-sm font-semibold text-headingColor">
-                  <span className="text-sx text-red-600">$</span>
+                  <span className="text-xs text-red-600">$ </span>
                   {n.price}
                 </p>
               </div>
