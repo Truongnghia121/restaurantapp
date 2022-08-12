@@ -9,6 +9,14 @@ import {
 } from "react-icons/md";
 import { categories } from "../utils/data";
 import Loader from "./Loader";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { storage } from "../firebase.config";
+import { saveItem } from "../utils/fireBaseFunctions";
 
 const CreateContainer = () => {
   const [title, setTitle] = useState("");
@@ -21,11 +29,108 @@ const CreateContainer = () => {
   const [msg, setMsg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const uploadImage = () => {};
+  // Xử lý dữ liệu
+  // upload hình ảnh
+  const uploadImage = (e) => {
+    setIsLoading(true);
+    const imageFile = e.target.files[0];
+    const storageRef = ref(storage, `Images/${Date.now()}-${imageFile.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, imageFile);
 
-  const deleteImage = () => {};
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const uploadProgress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      },
+      (error) => {
+        console.log(error);
+        setFields(true);
+        setMsg("Error while uploading : Try AGain!");
+        setAlertStatus("danger");
+        setTimeout(() => {
+          setFields(false);
+          setIsLoading(false);
+        }, 4000);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((dowloadURL) => {
+          setImageAsset(dowloadURL);
+          setIsLoading(false);
+          setFields(true);
+          setMsg("Image upload successfully !");
+          setAlertStatus("success");
+          setTimeout(() => {
+            setFields(false);
+          }, 4000);
+        });
+      }
+    );
+  };
+  // delete image
+  const deleteImage = () => {
+    setIsLoading(true);
+    const deleteRef = ref(storage, imageAsset);
+    deleteObject(deleteRef).then(() => {
+      setImageAsset(null);
+      setIsLoading(false);
+      setFields(true);
+      setMsg("Image deleted successfully !");
+      setAlertStatus("success");
+      setTimeout(() => {
+        setFields(false);
+      }, 4000);
+    });
+  };
+  // Luu du lieu
+  const saveDetails = () => {
+    try {
+      if (!title || !calories || !imageAsset || !price || !category) {
+        setFields(true);
+        setMsg("Image fields can't be empty!");
+        setAlertStatus("danger");
+        setTimeout(() => {
+          setFields(false);
+        }, 4000);
+      } else {
+        const data = {
+          is: `${Date.now()}`,
+          title: title,
+          imageUrl: imageAsset,
+          category: category,
+          calories: calories,
+          qty: 1,
+          price: price,
+        };
+        saveItem(data);
+        setIsLoading(false);
+        setFields(true);
+        setMsg("Data Uploading successfully !");
+        clearData();
+        setAlertStatus("success");
+        setTimeout(() => {
+          setFields(false);
+        }, 4000);
+      }
+    } catch (error) {
+      console.log(error);
+      setFields(true);
+      setMsg("Error while uploading : Try AGain!");
+      setAlertStatus("danger");
+      setTimeout(() => {
+        setFields(false);
+        setIsLoading(false);
+      }, 4000);
+    }
+  };
 
-  const saveDetails = () => {};
+  const clearData = () => {
+    setTitle("");
+    setImageAsset(null);
+    setCalories("");
+    setPrice("");
+    setCalories("Select Category");
+  };
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
@@ -100,10 +205,7 @@ const CreateContainer = () => {
             <>
               {!imageAsset ? (
                 <>
-                  <label
-                    htmlFor=""
-                    className="w-full h-full flex flex-col items-start justify-center cursor-pointer"
-                  >
+                  <label className="w-full h-full flex flex-col items-start justify-center cursor-pointer">
                     <div
                       className="w-full h-full flex flex-col items-center justify-center 
                     gap-2"
@@ -125,8 +227,9 @@ const CreateContainer = () => {
               ) : (
                 <>
                   <div className="relative h-full">
-                    <image
+                    <img
                       src={imageAsset}
+                      aria-hidden
                       alt="uploaded image"
                       className="w-full h-full object-cover"
                     />
