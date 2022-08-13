@@ -16,7 +16,9 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { storage } from "../firebase.config";
-import { saveItem } from "../utils/fireBaseFunctions";
+import { getAllFoodItems, saveItem } from "../utils/fireBaseFunctions";
+import { actionType } from "../context/reducer";
+import { useStateValue } from "../context/StateProvider";
 
 const CreateContainer = () => {
   const [title, setTitle] = useState("");
@@ -28,6 +30,9 @@ const CreateContainer = () => {
   const [alertStatus, setAlertStatus] = useState("danger");
   const [msg, setMsg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // eslint-disable-next-line no-unused-vars, no-empty-pattern
+  const [{ foodItems }, dispatch] = useStateValue();
 
   // Xử lý dữ liệu
   // upload hình ảnh
@@ -94,7 +99,7 @@ const CreateContainer = () => {
         }, 4000);
       } else {
         const data = {
-          is: `${Date.now()}`,
+          id: `${Date.now()}`,
           title: title,
           imageUrl: imageAsset,
           category: category,
@@ -122,6 +127,7 @@ const CreateContainer = () => {
         setIsLoading(false);
       }, 4000);
     }
+    fetchData();
   };
 
   const clearData = () => {
@@ -129,7 +135,16 @@ const CreateContainer = () => {
     setImageAsset(null);
     setCalories("");
     setPrice("");
-    setCalories("Select Category");
+    setCalories("");
+  };
+  //
+  const fetchData = async () => {
+    await getAllFoodItems().then((data) => {
+      dispatch({
+        type: actionType.SET_FOOD_ITEMS,
+        foodItems: data,
+      });
+    });
   };
 
   return (

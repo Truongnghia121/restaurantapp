@@ -1,9 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { CreateContainer, Header, MainContainer } from "./components";
 import { AnimatePresence } from "framer-motion";
 import { Routes, Route } from "react-router-dom";
+import { getAllFoodItems } from "./utils/fireBaseFunctions";
+import { useStateValue } from "./context/StateProvider";
+import { actionType } from "./context/reducer";
 
 const App = () => {
+  //
+  // eslint-disable-next-line no-unused-vars, no-empty-pattern
+  const [{ foodItems }, dispatch] = useStateValue();
+
+  const fetchData = async () => {
+    await getAllFoodItems().then((data) => {
+      dispatch({
+        type: actionType.SET_FOOD_ITEMS,
+        foodItems: data,
+      });
+    });
+  };
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <AnimatePresence exitBeforeEnter>
