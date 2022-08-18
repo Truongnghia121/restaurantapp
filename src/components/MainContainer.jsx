@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from "react";
 
 import HomeContainer from "./HomeContainer";
 import { motion } from "framer-motion";
@@ -10,7 +11,7 @@ import CartContainer from "./CartContainer";
 
 const MainContainer = () => {
   // lay du lieu tu firebase
-  const [{ foodItems }, dispatch] = useStateValue();
+  const [{ foodItems, cartShow }, dispatch] = useStateValue();
   // MdChevronLeft & MdChevronRight
   const [scrollValue, setScrollValue] = useState(0);
 
@@ -57,7 +58,7 @@ const MainContainer = () => {
         />
       </section>
       <MenuContainer />
-      <CartContainer />
+      {cartShow && <CartContainer />}
     </div>
   );
 };
